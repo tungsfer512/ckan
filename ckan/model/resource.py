@@ -19,6 +19,7 @@ from ckan.model import (
 import ckan.lib.dictization
 from .package import Package
 import ckan.model
+import os
 
 __all__ = ['Resource', 'resource_table']
 
@@ -126,8 +127,7 @@ class Resource(core.StatefulObjectMixin,
     @classmethod
     def get_extra_columns(cls):
         if cls.extra_columns is None:
-            cls.extra_columns = config.get(
-                'ckan.extra_resource_fields', '').split()
+            cls.extra_columns = os.environ.get("CKAN_EXTRA_RESOUURCE_FIELDS", "alt_url publisher publisher_id").split()
             for field in cls.extra_columns:
                 setattr(cls, field, DictProxy(field, 'extras'))
         return cls.extra_columns

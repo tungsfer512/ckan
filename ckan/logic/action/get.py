@@ -2085,6 +2085,9 @@ def resource_search(context, data_dict):
     order_by = data_dict.get('order_by')
     offset = data_dict.get('offset')
     limit = data_dict.get('limit')
+    print("++++++++++++++++++++++++++++++")
+    print(query, fields, order_by, offset, limit)
+    print("++++++++++++++++++++++++++++++")
 
     q = model.Session.query(model.Resource) \
          .join(model.Package) \
@@ -2097,7 +2100,9 @@ def resource_search(context, data_dict):
 
         if isinstance(terms, string_types):
             terms = [terms]
-
+        print("------------------------------")
+        print(field, terms)
+        print("------------------------------")
         if field not in resource_fields:
             msg = _('Field "{field}" not recognised in resource_search.')\
                 .format(field=field)

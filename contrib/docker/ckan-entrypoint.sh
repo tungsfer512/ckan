@@ -69,8 +69,14 @@ if [ -z "$CKAN_DATAPUSHER_URL" ]; then
 fi
 
 set_environment
-ckan --config "$CONFIG" db init
-echo y | ckan --config "$CONFIG" user add admin email=admin@gmail.com password=12345678
-ckan --config "$CONFIG" sysadmin add admin
+ckan --config /etc/ckan/production.ini db init
+USER_ADMIN=$(ckan --config /etc/ckan/production.ini user list | grep admin)
+if [ $USER_ADMIN != 'name=admin' ]; then
+  echo "====================Create User Admin===================="
+  echo y | ckan --config /etc/ckan/production.ini user add admin email=admin@gmail.com password=12345678
+  ckan --config /etc/ckan/production.ini sysadmin add admin
+else
+  echo "====================User Admin already existed===================="
+fi
 exec "$@"
 

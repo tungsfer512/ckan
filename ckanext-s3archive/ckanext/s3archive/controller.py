@@ -17,7 +17,9 @@ import cgi
 import six
 import ckan.lib.navl.dictization_functions as dict_fns
 from ckan.views.dataset import (
-    _get_pkg_template, _get_package_type, _setup_template_variables
+    _get_pkg_template,
+    _get_package_type,
+    _setup_template_variables,
 )
 
 log = logging.getLogger(__name__)
@@ -44,6 +46,12 @@ class S3Controller(PackageController):
         Provides a direct download by either redirecting the user to the url stored
          or downloading an uploaded file directly.
         """
+        log.info("=============================")
+        log.info("Downloading file from S3")
+        log.info(id)
+        log.info(resource_id)
+        log.info(filename)
+        log.info("=============================")
         context = {
             "model": model,
             "session": model.Session,
@@ -72,7 +80,9 @@ class S3Controller(PackageController):
             bucket = config.get("ckanext.s3archive.bucket")
 
             if not os.path.exists(filepath):
-                content_type, content_enc = mimetypes.guess_type(rsc.get("url", ""))
+                content_type, content_enc = mimetypes.guess_type(
+                    rsc.get("url", "")
+                )
                 key_name = filepath[len(filepath) - 39 :]
 
                 client = Minio(
@@ -83,7 +93,9 @@ class S3Controller(PackageController):
                 )
                 bucket = client.bucket_exists(bucket)
                 if bucket:
-                    objects = client.list_objects(bucket, prefix=key_name.lstrip("/"))
+                    objects = client.list_objects(
+                        bucket, prefix=key_name.lstrip("/")
+                    )
                     if len(objects) <= 0:
                         abort(404, _("Resource data not found file"))
                 else:
@@ -108,7 +120,9 @@ class S3Controller(PackageController):
             except OSError:
                 abort(404, _("Resource data not found"))
             response.headers.update(dict(headers))
-            content_type, content_enc = mimetypes.guess_type(rsc.get("url", ""))
+            content_type, content_enc = mimetypes.guess_type(
+                rsc.get("url", "")
+            )
             response.headers["Content-Type"] = content_type
             response.status = status
             return app_iter
@@ -116,7 +130,7 @@ class S3Controller(PackageController):
             abort(404, _("No download is available"))
         redirect(rsc["url"])
 
-    def resource_create_callback(self,*args, **kwargs):
+    def resource_create_callback(self, *args, **kwargs):
         log.info("=============================")
         log.info("Uploading file to S3")
         log.info(self)

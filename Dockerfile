@@ -64,7 +64,7 @@ ENTRYPOINT ["/ckan-entrypoint.sh"]
 
 EXPOSE 5000
 
-RUN rm -rf /etc/ckan/production.ini
-COPY ./production.ini /etc/ckan/
+# RUN rm -rf /etc/ckan/production.ini
+# COPY ./production.ini /etc/ckan/
 
 CMD ["ckan","-c","/etc/ckan/production.ini", "run", "--host", "0.0.0.0"]
